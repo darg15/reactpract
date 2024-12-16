@@ -19,7 +19,7 @@ function App() {
 
   const[todos, setTodos] = React.useState(defaultTodos); //React.userState() setea por defecto algo
   const [searchValue, setSearchValue /*estos nombres pueden llamarse de cualquier manera*/] = React.useState('')
-  console.log('los usuarios todos de ' + searchValue) //Aqui hace muchas impresiones porque lo hace cada vez que se cam = bia el state(cada vez que escriben)
+  // console.log('los usuarios todos de ' + searchValue) //Aqui hace muchas impresiones porque lo hace cada vez que se cam = bia el state(cada vez que escriben)
 
   const searchedTodos = todos.filter(todo =>
       {
@@ -30,6 +30,20 @@ function App() {
 
   const completedTodos = todos.filter(todo => !!todo.completed).length // !! significa doble negacion, y sirve para trabajar con valores true y false
   const totalTodos = todos.length;
+
+  const completeTodo = (text) => {
+    const newTodos = [...todos]
+    const todoIndex = newTodos.findIndex((todo) => todo.text == text)
+    newTodos[todoIndex].completed = true;
+    setTodos(newTodos)
+  }
+
+  const deleteTodo = (text) => {
+    const newTodos = [...todos]
+    const todoIndex = newTodos.findIndex((todo) => todo.text == text)
+    newTodos.splice(todoIndex, 1)
+    setTodos(newTodos)
+  }
 
   return (
     <>
@@ -44,7 +58,8 @@ function App() {
         <TodoItem />
         <TodoItem /> */}
         {searchedTodos.map(todo => (
-          <TodoItem key={todo.text} text={todo.text} completed={todo.completed}/>
+          <TodoItem key={todo.text} text={todo.text} completed={todo.completed} onComplete = { () => completeTodo(todo.text)}
+          onDelete = { () => deleteTodo(todo.text)}/>
         ))}
       </TodoList>
 
