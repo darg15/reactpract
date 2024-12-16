@@ -23,8 +23,8 @@ function App() {
 
   const searchedTodos = todos.filter(todo =>
       {
-        const todoText = todo.text.toLocaleLowerCase()
-        const searchText = searchValue.toLocaleLowerCase()
+        const todoText = todo.text.toLowerCase()
+        const searchText = searchValue.toLowerCase()
         
         return todoText.includes(searchText)}); //Buscando todos dentro de la lista
 
