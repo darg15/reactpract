@@ -8,17 +8,29 @@ import React from 'react';
 
 
 const defaultTodos = [
-  {text: 'Elemento1', completed: true},
+  {text: 'Ajustando elementos a la pantalla', completed: true},
   {text: 'Elemento2', completed: false},
   {text: 'Elemento3', completed: false},
   {text: 'Elemento4', completed: false},
+  {text: 'Usar estados derivados', completed: true}
 ]
 
 function App() {
+
+  const[todos, setTodos] = React.useState(defaultTodos); //React.userState() setea por defecto algo
+  const [searchValue, setSearchValue /*estos nombres pueden llamarse de cualquier manera*/] = React.useState('')
+  console.log('los usuarios todos de ' + searchValue) //Aqui hace muchas impresiones porque lo hace cada vez que se cambia el state(cada vez que escriben)
+
+  const completedTodos = todos.filter(todo => !!todo.completed).length // !! significa doble negacion, y sirve para trabajar con valores true y false
+  const totalTodos = todos.length;
+
   return (
     <>
-      <TodoCounter completed={16} total={25}/>
-      <TodoSearch />
+      <TodoCounter completed={completedTodos} total={totalTodos}/>
+      <TodoSearch
+        searchValue = {searchValue}
+        setSearchValue={setSearchValue}
+      />
 
       <TodoList>
         {/* <TodoItem  />
