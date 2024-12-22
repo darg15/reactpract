@@ -18,21 +18,32 @@ import React from 'react';
 // localStorage.setItem('TODOS_V1', JSON.stringify(defaultTodos))
 // localStorage.removeItem('TODOS_V1')
 
-function App() {
+function useLocalStorage(itemName, initialValue) {
+  //Los hooks de React, empiezan con la nomenclatura de use (useLocalStorage por ejemplo)
+  const localStorageItem = localStorage.getItem(itemName)
+  let parsedItem
 
-  const localStorageTodos = localStorage.getItem('TODOS_V1')
-  let parsedTodos = []
-
-  if(!localStorageTodos) {
-    localStorage.setItem('TODOS_V1', JSON.stringify([]))
-    parsedTodos = []
+  if(!localStorageItem) {
+    localStorage.setItem(itemName, JSON.stringify(initialValue))
+    parsedItem = initialValue
   }
   else{
-      parsedTodos = JSON.parse(localStorageTodos)
+      parsedItem = JSON.parse(localStorageItem)
   }
-  
 
-  const[todos, setTodos] = React.useState(parsedTodos); //React.userState() setea por defecto algo
+  const [item, setItem] = React.useState(parsedItem);
+
+  const saveItem = (newItem) => {
+    localStorage.setItem(itemName, JSON.stringify(newItem))
+    setItem(newItem)
+  }
+
+  return [item, saveItem]
+}
+
+function App() {
+  //const[todos, setTodos] = React.useState(parsedTodos); //React.userState() setea por defecto algo
+  const[todos, saveTodos] = useLocalStorage('TODOS_V1', []); 
   const [searchValue, setSearchValue /*estos nombres pueden llamarse de cualquier manera*/] = React.useState('')
   // console.log('los usuarios todos de ' + searchValue) //Aqui hace muchas impresiones porque lo hace cada vez que se cam = bia el state(cada vez que escriben)
 
@@ -46,13 +57,6 @@ function App() {
   const completedTodos = todos.filter(todo => !!todo.completed).length // !! significa doble negacion, y sirve para trabajar con valores true y false
   const totalTodos = todos.length;
 
-
-
-  const saveTodos = (newTodos) => {
-    localStorage.setItem('TODOS_V1', JSON.stringify(newTodos))
-    setTodos(newTodos)
-
-  }
 
   const completeTodo = (text) => {
     const newTodos = [...todos]
@@ -92,8 +96,4 @@ function App() {
 
   );
 }
-
-
-
-
 export default App;
