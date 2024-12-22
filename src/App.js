@@ -7,17 +7,32 @@ import { CreateTodoButton } from './CreateTodoButton';
 import React from 'react';
 
 
-const defaultTodos = [
-  {text: 'Ajustando elementos a la pantalla', completed: true},
-  {text: 'Cositas', completed: false},
-  {text: 'Elemento3', completed: false},
-  {text: 'Elemento4', completed: false},
-  {text: 'Usar estados derivados', completed: true}
-]
+// const defaultTodos = [
+//   {text: 'Ajustando elementos a la pantalla', completed: true},
+//   {text: 'Cositas', completed: false},
+//   {text: 'Elemento3', completed: false},
+//   {text: 'Elemento4', completed: false},
+//   {text: 'Usar estados derivados', completed: true}
+// ]
+
+// localStorage.setItem('TODOS_V1', JSON.stringify(defaultTodos))
+// localStorage.removeItem('TODOS_V1')
 
 function App() {
 
-  const[todos, setTodos] = React.useState(defaultTodos); //React.userState() setea por defecto algo
+  const localStorageTodos = localStorage.getItem('TODOS_V1')
+  let parsedTodos = []
+
+  if(!localStorageTodos) {
+    localStorage.setItem('TODOS_V1', JSON.stringify([]))
+    parsedTodos = []
+  }
+  else{
+      parsedTodos = JSON.parse(localStorageTodos)
+  }
+  
+
+  const[todos, setTodos] = React.useState(parsedTodos); //React.userState() setea por defecto algo
   const [searchValue, setSearchValue /*estos nombres pueden llamarse de cualquier manera*/] = React.useState('')
   // console.log('los usuarios todos de ' + searchValue) //Aqui hace muchas impresiones porque lo hace cada vez que se cam = bia el state(cada vez que escriben)
 
@@ -25,24 +40,32 @@ function App() {
       {
         const todoText = todo.text.toLowerCase()
         const searchText = searchValue.toLowerCase()
-        
+
         return todoText.includes(searchText)}); //Buscando todos dentro de la lista
 
   const completedTodos = todos.filter(todo => !!todo.completed).length // !! significa doble negacion, y sirve para trabajar con valores true y false
   const totalTodos = todos.length;
 
+
+
+  const saveTodos = (newTodos) => {
+    localStorage.setItem('TODOS_V1', JSON.stringify(newTodos))
+    setTodos(newTodos)
+
+  }
+
   const completeTodo = (text) => {
     const newTodos = [...todos]
     const todoIndex = newTodos.findIndex((todo) => todo.text == text)
     newTodos[todoIndex].completed = true;
-    setTodos(newTodos)
+    saveTodos(newTodos)
   }
 
   const deleteTodo = (text) => {
     const newTodos = [...todos]
     const todoIndex = newTodos.findIndex((todo) => todo.text == text)
     newTodos.splice(todoIndex, 1)
-    setTodos(newTodos)
+    saveTodos(newTodos)
   }
 
   return (
@@ -65,8 +88,8 @@ function App() {
 
        <CreateTodoButton />
         {/*  esto es reactFragment <> y </> */};
-       </> 
-      
+       </>
+
   );
 }
 
